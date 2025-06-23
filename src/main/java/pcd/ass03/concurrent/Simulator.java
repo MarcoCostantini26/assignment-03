@@ -1,4 +1,4 @@
-package pcd.ass01.concurrent;
+package pcd.ass03.concurrent;
 
 public interface Simulator {
     void runSimulation();

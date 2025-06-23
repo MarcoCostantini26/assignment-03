@@ -1,12 +1,12 @@
-package pcd.ass01.view;
+package pcd.ass03.view;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import pcd.ass01.model.BoidModel;
+import pcd.ass03.model.BoidModel;
 import java.awt.*;
 import java.util.Hashtable;
-import pcd.ass01.concurrent.Simulator;;
+import pcd.ass03.concurrent.Simulator;;
 
 public class BoidsView implements ChangeListener {
 

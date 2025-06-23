@@ -6,11 +6,11 @@
     Meco Daniel
  */
 
-package pcd.ass01;
+package pcd.ass03;
 
-import pcd.ass01.model.BoidModel;
-import pcd.ass01.concurrent.tasks.BoidsSimulator;
-import pcd.ass01.view.BoidsView;
+import pcd.ass03.model.BoidModel;
+import pcd.ass03.concurrent.tasks.BoidsSimulator;
+import pcd.ass03.view.BoidsView;
 import javax.swing.JOptionPane;
 
 public class TaskBoidsSimulation {

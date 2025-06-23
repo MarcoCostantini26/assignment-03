@@ -1,8 +1,8 @@
-package pcd.ass01.view;
+package pcd.ass03.view;
 
 import javax.swing.*;
-import pcd.ass01.model.Boid;
-import pcd.ass01.model.BoidModel;
+import pcd.ass03.model.Boid;
+import pcd.ass03.model.BoidModel;
 import java.awt.*;
 
 public class BoidsPanel extends JPanel {

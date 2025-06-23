@@ -1,7 +1,7 @@
-package pcd.ass01.concurrent.tasks;
+package pcd.ass03.concurrent.tasks;
 
-import pcd.ass01.model.Boid;
-import pcd.ass01.model.BoidModel;
+import pcd.ass03.model.Boid;
+import pcd.ass03.model.BoidModel;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.BrokenBarrierException;

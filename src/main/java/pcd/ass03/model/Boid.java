@@ -1,6 +1,6 @@
-package pcd.ass01.model;
+package pcd.ass03.model;
 
-import pcd.ass01.common.*;
+import pcd.ass03.common.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;

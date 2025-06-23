@@ -1,7 +1,7 @@
-package pcd.ass01.concurrent.virtualThreads;
+package pcd.ass03.concurrent.virtualThreads;
 
-import pcd.ass01.model.Boid;
-import pcd.ass01.model.BoidModel;
+import pcd.ass03.model.Boid;
+import pcd.ass03.model.BoidModel;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 

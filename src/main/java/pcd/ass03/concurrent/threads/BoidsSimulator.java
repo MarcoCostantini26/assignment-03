@@ -1,12 +1,12 @@
-package pcd.ass01.concurrent.threads;
+package pcd.ass03.concurrent.threads;
 
 import java.util.Optional;
 import java.util.concurrent.CyclicBarrier;
-import pcd.ass01.model.*;
-import pcd.ass01.view.BoidsView;
+import pcd.ass03.model.*;
+import pcd.ass03.view.BoidsView;
 import java.util.ArrayList;
 import java.util.List;
-import pcd.ass01.concurrent.Simulator;;
+import pcd.ass03.concurrent.Simulator;;
 
 public class BoidsSimulator implements Simulator {
     private final BoidModel model;
