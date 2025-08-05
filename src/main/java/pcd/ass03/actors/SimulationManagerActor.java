@@ -8,16 +8,20 @@ import java.util.List;
 import pcd.ass03.messages.SimulationMessages;
 import pcd.ass03.messages.BoidMessages;
 import pcd.ass03.model.Boid;
+import pcd.ass03.model.BoidModel;
 
 public class SimulationManagerActor extends AbstractActor {
     private List<ActorRef> boidActors;
     private int responses = 0;
+    private BoidModel model;
     private List<Boid> updatedStates = new ArrayList<>();
     private List<Boid> currentStates = new ArrayList<>();
     private boolean running = false;
 
-    public SimulationManagerActor(List<ActorRef> boidActors) {
+    public SimulationManagerActor(List<ActorRef> boidActors, List<Boid> initialStates, BoidModel model) {
         this.boidActors = boidActors;
+        this.currentStates = initialStates;
+        this.model = model;
     }
 
     @Override
@@ -49,6 +53,11 @@ public class SimulationManagerActor extends AbstractActor {
                     // Aggiorna la lista degli stati correnti
                     currentStates.clear();
                     currentStates.addAll(updatedStates);
+
+                    // Aggiorna il modello globale
+                    for (int i = 0; i < currentStates.size(); i++) {
+                        model.updateBoid(i, currentStates.get(i));
+                    }
 
                     // Qui puoi aggiornare la GUI se serve
 

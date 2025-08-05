@@ -5,6 +5,7 @@ import akka.actor.AbstractActor;
 import pcd.ass03.model.Boid;
 import pcd.ass03.model.BoidModel;
 import pcd.ass03.messages.BoidMessages;
+import pcd.ass03.messages.SimulationMessages;
 
 public class BoidActor extends AbstractActor {
     private Boid boid;
@@ -19,9 +20,8 @@ public class BoidActor extends AbstractActor {
     public Receive createReceive() {
         return receiveBuilder()
             .match(BoidMessages.UpdateBoidState.class, msg -> {
-                // Aggiorna lo stato del boid usando i neighbors
-                boid.updateState(model);
-                // Puoi inviare una risposta al manager se serve
+                boid.updateStateWithNeighbors(msg.neighbors, model); // devi implementare questo metodo!
+                getSender().tell(new SimulationMessages.BoidStateUpdated(boid), getSelf());
             })
             .match(BoidMessages.GetBoidState.class, msg -> {
                 getSender().tell(boid, getSelf());

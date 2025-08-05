@@ -32,6 +32,47 @@ public class Boid {
         return new V2d(currentVel.x(), currentVel.y());
     }
 
+    public void setPos(P2d pos) {
+        this.pos.set(pos);
+    }
+
+    public void setVel(V2d vel) {
+        this.vel.set(vel);
+    }
+
+    public void updateStateWithNeighbors(List<Boid> neighbors, BoidModel model) {
+        // Usa i pesi e i parametri che hai già nella classe o passali come costanti
+        double separationWeight = 1.0;
+        double alignmentWeight = 1.0;
+        double cohesionWeight = 1.0;
+        double maxSpeed = 4.0;
+
+        P2d currentPos = getPos();
+        V2d currentVel = getVel();
+
+        // Calcola le tre componenti
+        V2d separation = calculateSeparation(neighbors, model, currentPos);
+        V2d alignment = calculateAlignment(neighbors, currentVel);
+        V2d cohesion = calculateCohesion(neighbors, currentPos);
+
+        lock.lock();
+        try {
+            V2d newVel = currentVel
+                .sum(alignment.mul(alignmentWeight))
+                .sum(separation.mul(separationWeight))
+                .sum(cohesion.mul(cohesionWeight));
+            double speed = newVel.abs();
+            if (speed > maxSpeed) {
+                newVel = newVel.getNormalized().mul(maxSpeed);
+            }
+            vel.set(newVel);
+            P2d newPos = currentPos.sum(newVel);
+            pos.set(newPos);
+        } finally {
+            lock.unlock();
+        }
+    }
+
     public void updateState(BoidModel model) {
         // Ottiene copie sicure per i calcoli
         P2d currentPos = getPos();
@@ -39,8 +80,8 @@ public class Boid {
         // Calcoli fuori dal lock
         List<Boid> nearbyBoids = getNearbyBoids(model, currentPos);
         V2d separation = calculateSeparation(nearbyBoids, model, currentPos);
-        V2d alignment = calculateAlignment(nearbyBoids, model, currentVel);
-        V2d cohesion = calculateCohesion(nearbyBoids, model, currentPos);
+        V2d alignment = calculateAlignment(nearbyBoids, currentVel);
+        V2d cohesion = calculateCohesion(nearbyBoids, currentPos);
         // Protezione solo dell'aggiornamento dello stato
         lock.lock();
         try {
@@ -82,7 +123,7 @@ public class Boid {
         return list;
     }
 
-    private V2d calculateAlignment(List<Boid> nearbyBoids, BoidModel model, V2d currentVel) {
+    private V2d calculateAlignment(List<Boid> nearbyBoids, V2d currentVel) {
         double avgVx = 0, avgVy = 0;
         if (!nearbyBoids.isEmpty()) {
             for (Boid other : nearbyBoids) {
@@ -97,7 +138,7 @@ public class Boid {
         return new V2d(0, 0);
     }
 
-    private V2d calculateCohesion(List<Boid> nearbyBoids, BoidModel model, P2d currentPos) {
+    private V2d calculateCohesion(List<Boid> nearbyBoids, P2d currentPos) {
         double centerX = 0, centerY = 0;
         if (!nearbyBoids.isEmpty()) {
             for (Boid other : nearbyBoids) {

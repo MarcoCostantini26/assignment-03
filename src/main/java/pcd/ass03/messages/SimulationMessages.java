@@ -13,10 +13,8 @@ public class SimulationMessages {
         }
     }
     public static class BoidStateUpdated {
-        public final int boidId;
         public final Boid state;
-        public BoidStateUpdated(int boidId, Boid state) {
-            this.boidId = boidId;
+        public BoidStateUpdated(Boid state) {
             this.state = state;
         }
     }
