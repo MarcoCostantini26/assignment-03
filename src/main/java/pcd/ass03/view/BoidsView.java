@@ -6,7 +6,7 @@ import javax.swing.event.ChangeListener;
 import pcd.ass03.model.BoidModel;
 import java.awt.*;
 import java.util.Hashtable;
-import pcd.ass03.concurrent.Simulator;;
+import pcd.ass03.actors.Simulator;
 
 public class BoidsView implements ChangeListener {
 

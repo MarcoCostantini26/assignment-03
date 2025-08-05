@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.typesafe.akka:akka-actor_2.13:2.6.20'
+    // aggiungi altre dipendenze se servono
+}
+
+sourceCompatibility = '17' // o la versione Java che usi
+targetCompatibility = '17'
