@@ -8,8 +8,8 @@
 
 package pcd.ass03;
 
+import pcd.ass03.actors.BoidActor;
 import pcd.ass03.model.BoidModel;
-import pcd.ass03.concurrent.virtualThreads.BoidsSimulator;
 import pcd.ass03.view.BoidsView;
 import javax.swing.JOptionPane;
 
@@ -47,9 +47,9 @@ public class VirtualSimulation {
                         AVOID_RADIUS); 
         
         // Crea un simulatore con approccio Virtual Thread
-        var sim = new BoidsSimulator(model);
-        var view = new BoidsView(model, sim, SCREEN_WIDTH, SCREEN_HEIGHT);
-        sim.attachView(view);
-        sim.start();
+        //var sim = new BoidsSimulator(model);
+        //var view = new BoidsView(model, sim, SCREEN_WIDTH, SCREEN_HEIGHT);
+        //sim.attachView(view);
+        //sim.start();
     }
 }
