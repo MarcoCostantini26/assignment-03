@@ -41,16 +41,14 @@ public class Boid {
     }
 
     public void updateStateWithNeighbors(List<Boid> neighbors, BoidModel model) {
-        // Usa i pesi e i parametri che hai già nella classe o passali come costanti
-        double separationWeight = 1.0;
-        double alignmentWeight = 1.0;
-        double cohesionWeight = 1.0;
-        double maxSpeed = 4.0;
+        double separationWeight = model.getSeparationWeight();
+        double alignmentWeight = model.getAlignmentWeight();
+        double cohesionWeight = model.getCohesionWeight();
+        double maxSpeed = model.getMaxSpeed();
 
         P2d currentPos = getPos();
         V2d currentVel = getVel();
 
-        // Calcola le tre componenti
         V2d separation = calculateSeparation(neighbors, model, currentPos);
         V2d alignment = calculateAlignment(neighbors, currentVel);
         V2d cohesion = calculateCohesion(neighbors, currentPos);
