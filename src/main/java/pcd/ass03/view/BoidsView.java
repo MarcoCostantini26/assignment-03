@@ -113,8 +113,9 @@ public class BoidsView implements ChangeListener {
 		cp.add(BorderLayout.SOUTH, slidersPanel);
 
 		frame.setContentPane(cp);	
-		
-        frame.setVisible(true);
+		frame.setVisible(true);
+
+		new javax.swing.Timer(16, e -> update(-1)).start();
 	}
 
 	private JSlider makeSlider() {
