@@ -55,8 +55,11 @@ public class SimulationManagerActor extends AbstractActor {
                     currentStates.addAll(updatedStates);
 
                     // Aggiorna il modello globale
-                    for (int i = 0; i < currentStates.size(); i++) {
-                        model.updateBoid(i, currentStates.get(i));
+                    for (int i = 0; i < currentStates.size() && i < updatedStates.size(); i++) {
+                        // Debug: verifica che gli indici siano validi
+                        if (i < model.getBoids().size()) {
+                            model.updateBoid(i, currentStates.get(i));
+                        }
                     }
 
                     // Qui puoi aggiornare la GUI se serve

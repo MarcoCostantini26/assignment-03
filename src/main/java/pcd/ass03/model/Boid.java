@@ -3,41 +3,33 @@ package pcd.ass03.model;
 import pcd.ass03.common.*;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Boid {
-    // Usa AtomicReference per letture atomiche
-    private final AtomicReference<P2d> pos;
-    private final AtomicReference<V2d> vel;
-    private final Lock lock = new ReentrantLock();
+    // Stato semplice - nel modello ad attori non servono AtomicReference o lock
+    private P2d pos;
+    private V2d vel;
 
     public Boid(P2d pos, V2d vel) {
-        this.pos = new AtomicReference<>(pos);
-        this.vel = new AtomicReference<>(vel);
+        this.pos = pos;
+        this.vel = vel;
     }
 
     public P2d getPos() {
-        // Lettura atomica, thread-safe
-        P2d currentPos = pos.get();
         // Copia difensiva per evitare modifiche esterne
-        return new P2d(currentPos.x(), currentPos.y());
+        return new P2d(pos.x(), pos.y());
     }
 
     public V2d getVel() {
-        // Lettura atomica, thread-safe
-        V2d currentVel = vel.get();
         // Copia difensiva per evitare modifiche esterne
-        return new V2d(currentVel.x(), currentVel.y());
+        return new V2d(vel.x(), vel.y());
     }
 
     public void setPos(P2d pos) {
-        this.pos.set(pos);
+        this.pos = pos;
     }
 
     public void setVel(V2d vel) {
-        this.vel.set(vel);
+        this.vel = vel;
     }
 
     public void updateStateWithNeighbors(List<Boid> neighbors, BoidModel model) {
@@ -53,58 +45,53 @@ public class Boid {
         V2d alignment = calculateAlignment(neighbors, currentVel);
         V2d cohesion = calculateCohesion(neighbors, currentPos);
 
-        lock.lock();
-        try {
-            V2d newVel = currentVel
-                .sum(alignment.mul(alignmentWeight))
-                .sum(separation.mul(separationWeight))
-                .sum(cohesion.mul(cohesionWeight));
-            double speed = newVel.abs();
-            if (speed > maxSpeed) {
-                newVel = newVel.getNormalized().mul(maxSpeed);
-            }
-            vel.set(newVel);
-            P2d newPos = currentPos.sum(newVel);
-            pos.set(newPos);
-        } finally {
-            lock.unlock();
+        // Aggiornamento diretto - nessun lock necessario nel modello ad attori
+        V2d newVel = currentVel
+            .sum(alignment.mul(alignmentWeight))
+            .sum(separation.mul(separationWeight))
+            .sum(cohesion.mul(cohesionWeight));
+            
+        double speed = newVel.abs();
+        if (speed > maxSpeed) {
+            newVel = newVel.getNormalized().mul(maxSpeed);
         }
+        
+        this.vel = newVel;
+        P2d newPos = currentPos.sum(newVel);
+        this.pos = newPos;
     }
 
     public void updateState(BoidModel model) {
-        // Ottiene copie sicure per i calcoli
         P2d currentPos = getPos();
         V2d currentVel = getVel();
-        // Calcoli fuori dal lock
+        
         List<Boid> nearbyBoids = getNearbyBoids(model, currentPos);
         V2d separation = calculateSeparation(nearbyBoids, model, currentPos);
         V2d alignment = calculateAlignment(nearbyBoids, currentVel);
         V2d cohesion = calculateCohesion(nearbyBoids, currentPos);
-        // Protezione solo dell'aggiornamento dello stato
-        lock.lock();
-        try {
-            // Aggiornamento della velocità
-            V2d newVel = currentVel.sum(alignment.mul(model.getAlignmentWeight()))
-                    .sum(separation.mul(model.getSeparationWeight()))
-                    .sum(cohesion.mul(model.getCohesionWeight()));
-            double speed = newVel.abs();
-            if (speed > model.getMaxSpeed()) {
-                newVel = newVel.getNormalized().mul(model.getMaxSpeed());
-            }
-            // Aggiornamento atomico della velocità
-            vel.set(newVel);
-            // Aggiornamento della posizione
-            P2d newPos = currentPos.sum(newVel);
-            // Controllo dei bordi
-            if (newPos.x() < model.getMinX()) newPos = newPos.sum(new V2d(model.getWidth(), 0));
-            if (newPos.x() >= model.getMaxX()) newPos = newPos.sum(new V2d(-model.getWidth(), 0));
-            if (newPos.y() < model.getMinY()) newPos = newPos.sum(new V2d(0, model.getHeight()));
-            if (newPos.y() >= model.getMaxY()) newPos = newPos.sum(new V2d(0, -model.getHeight()));
-            // Aggiornamento atomico della posizione
-            pos.set(newPos);
-        } finally {
-            lock.unlock();
+        
+        // Aggiornamento diretto - nessun lock necessario nel modello ad attori
+        V2d newVel = currentVel.sum(alignment.mul(model.getAlignmentWeight()))
+                .sum(separation.mul(model.getSeparationWeight()))
+                .sum(cohesion.mul(model.getCohesionWeight()));
+                
+        double speed = newVel.abs();
+        if (speed > model.getMaxSpeed()) {
+            newVel = newVel.getNormalized().mul(model.getMaxSpeed());
         }
+        
+        this.vel = newVel;
+        
+        // Aggiornamento della posizione
+        P2d newPos = currentPos.sum(newVel);
+        
+        // Controllo dei bordi
+        if (newPos.x() < model.getMinX()) newPos = newPos.sum(new V2d(model.getWidth(), 0));
+        if (newPos.x() >= model.getMaxX()) newPos = newPos.sum(new V2d(-model.getWidth(), 0));
+        if (newPos.y() < model.getMinY()) newPos = newPos.sum(new V2d(0, model.getHeight()));
+        if (newPos.y() >= model.getMaxY()) newPos = newPos.sum(new V2d(0, -model.getHeight()));
+        
+        this.pos = newPos;
     }
 
     private List<Boid> getNearbyBoids(BoidModel model, P2d myPos) {

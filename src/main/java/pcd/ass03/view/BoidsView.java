@@ -7,6 +7,7 @@ import pcd.ass03.model.BoidModel;
 import java.awt.*;
 import java.util.Hashtable;
 import pcd.ass03.actors.Simulator;
+import pcd.ass03.actors.SimulationController;
 
 public class BoidsView implements ChangeListener {
 
@@ -16,12 +17,14 @@ public class BoidsView implements ChangeListener {
 	private BoidModel model;
 	private int width, height;
 	private Simulator simulator;
+	private SimulationController controller;
 	private JTextField boidsCountField;
 	
-	public BoidsView(BoidModel model, Simulator simulator,int width, int height) {
+	public BoidsView(BoidModel model, Simulator simulator, SimulationController controller, int width, int height) {
 		this.model = model;
 		this.width = width;
 		this.simulator = simulator;
+		this.controller = controller;
 		this.height = height;
 		
 		frame = new JFrame("Boids Simulation");
@@ -50,9 +53,6 @@ public class BoidsView implements ChangeListener {
 		 // Bottone Reset
 		 JButton resetButton = new JButton("Reset");
 		 resetButton.addActionListener(e -> {
-			// Ferma la simulazione corrente
-			simulator.stop();
-			
 			// Chiedi all'utente di inserire un nuovo numero di boids
 			String input = JOptionPane.showInputDialog("Inserisci il numero di boids:");
 			int nBoids = model.getBoids().size(); // valore predefinito: usa il numero attuale
@@ -68,16 +68,16 @@ public class BoidsView implements ChangeListener {
 			 alignmentSlider.setValue(10);
 			 cohesionSlider.setValue(10);
 			 
-			 // Reinizializza il modello con il nuovo numero di boid e i parametri predefiniti
-			 model.resetWithNewBoids(nBoids);
-			 
 			 // Imposta esplicitamente i pesi nel modello ai valori predefiniti
 			 model.setSeparationWeight(1.0);
 			 model.setAlignmentWeight(1.0);
 			 model.setCohesionWeight(1.0);
 			 
-			 // Avvia la nuova simulazione
-			 simulator.start();
+			 // USA IL CONTROLLER per ricreare tutto l'ActorSystem con il nuovo numero di boids
+			 controller.recreateWithNewBoids(nBoids);
+			 
+			 // Aggiorna il riferimento al simulator (potrebbe essere cambiato)
+			 this.simulator = controller.getSimulator();
 			 
 			 // Aggiorna il campo che mostra il numero di boid
 			 boidsCountField.setText(String.valueOf(model.getBoids().size()));
@@ -115,7 +115,8 @@ public class BoidsView implements ChangeListener {
 		frame.setContentPane(cp);	
 		frame.setVisible(true);
 
-		new javax.swing.Timer(16, e -> update(-1)).start();
+		// Timer a ~60 FPS (16ms = ~62.5 FPS)
+		new javax.swing.Timer(16, e -> update(60)).start();
 	}
 
 	private JSlider makeSlider() {
