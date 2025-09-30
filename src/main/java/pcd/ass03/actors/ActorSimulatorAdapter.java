@@ -33,12 +33,10 @@ public class ActorSimulatorAdapter implements Simulator {
 
     @Override
     public void attachView(Object view) {
-        // Se vuoi, puoi gestire la view qui
     }
 
     @Override
     public void stop() {
-        // Puoi implementare uno stop vero se hai un messaggio dedicato
         manager.tell(new SimulationMessages.PauseSimulation(), ActorRef.noSender());
         paused = true;
     }

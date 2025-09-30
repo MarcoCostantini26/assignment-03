@@ -20,14 +20,13 @@ public class BoidActor extends AbstractActor {
     public Receive createReceive() {
         return receiveBuilder()
             .match(BoidMessages.UpdateBoidState.class, msg -> {
-                boid.updateStateWithNeighbors(msg.neighbors, model); // devi implementare questo metodo!
+                boid.updateStateWithNeighbors(msg.neighbors, model);
                 getSender().tell(new SimulationMessages.BoidStateUpdated(boid), getSelf());
             })
             .match(BoidMessages.GetBoidState.class, msg -> {
                 getSender().tell(boid, getSelf());
             })
             .match(BoidMessages.SetWeights.class, msg -> {
-                // Aggiorna i pesi se necessario
             })
             .build();
     }

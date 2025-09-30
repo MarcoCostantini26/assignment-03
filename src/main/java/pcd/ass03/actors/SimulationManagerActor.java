@@ -44,7 +44,6 @@ public class SimulationManagerActor extends AbstractActor {
                 running = false;
                 responses = 0;
                 updatedStates.clear();
-                // Qui puoi aggiungere logica per ricreare i boid se necessario
             })
             .match(SimulationMessages.BoidStateUpdated.class, msg -> {
                 responses++;
@@ -62,8 +61,6 @@ public class SimulationManagerActor extends AbstractActor {
                         }
                     }
 
-                    // Qui puoi aggiornare la GUI se serve
-
                     responses = 0;
                     updatedStates.clear();
                     if (running) {
@@ -74,7 +71,7 @@ public class SimulationManagerActor extends AbstractActor {
             .build();
     }
 
-    private static final double PERCEPTION_RADIUS = 50.0; // o il valore che preferisci
+    private static final double PERCEPTION_RADIUS = 50.0;
 
     private void startStep() {
         for (int i = 0; i < boidActors.size(); i++) {
